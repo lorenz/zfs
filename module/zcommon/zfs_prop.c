@@ -458,6 +458,8 @@ zfs_prop_init(void)
 	zprop_register_string(ZFS_PROP_KEYLOCATION, "keylocation",
 	    "none", PROP_DEFAULT, ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME,
 	    "prompt | <file URI>", "KEYLOCATION");
+	zprop_register_string(ZFS_PROP_DEVICE_MAJOR, "dev_name", NULL,
+	    PROP_READONLY, ZFS_TYPE_VOLUME, "<string>", "DEVNAME");
 
 	/* readonly number properties */
 	zprop_register_number(ZFS_PROP_USED, "used", 0, PROP_READONLY,
@@ -513,6 +515,11 @@ zfs_prop_init(void)
 	    "<iters>", "PBKDF2ITERS");
 	zprop_register_number(ZFS_PROP_OBJSETID, "objsetid", 0,
 	    PROP_READONLY, ZFS_TYPE_DATASET, "<uint64>", "OBJSETID");
+	
+	zprop_register_number(ZFS_PROP_DEVICE_MAJOR, "dev_major", 0,
+	    PROP_READONLY, ZFS_TYPE_VOLUME, "<uint64>", "MAJOR");
+	zprop_register_number(ZFS_PROP_DEVICE_MINOR, "dev_minor", 0,
+	    PROP_READONLY, ZFS_TYPE_VOLUME, "<uint64>", "MINOR");
 
 	/* default number properties */
 	zprop_register_number(ZFS_PROP_QUOTA, "quota", 0, PROP_DEFAULT,

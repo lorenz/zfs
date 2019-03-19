@@ -343,7 +343,7 @@ zvol_get_stats(objset_t *os, nvlist_t *nv, const char *name)
 	zv = zvol_find_by_name(name, RW_NONE);
 	if (zv) {
 		dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MINOR, MINOR(zv->zv_dev));
-		dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MAJOR, MAJOR(zv->zfs_dev));
+		dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MAJOR, MAJOR(zv->zv_dev));
 		dsl_prop_nvlist_add_string(nv, ZFS_PROP_DEVICE_NAME, zv->zv_disk->disk_name);
 		mutex_exit(&zv->zv_state_lock);
 	} else {

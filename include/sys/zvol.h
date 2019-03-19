@@ -45,7 +45,7 @@ typedef struct zvol_state zvol_state_t;
 
 extern int zvol_check_volsize(uint64_t volsize, uint64_t blocksize);
 extern int zvol_check_volblocksize(const char *name, uint64_t volblocksize);
-extern int zvol_get_stats(objset_t *os, nvlist_t *nv);
+extern int zvol_get_stats(objset_t *os, nvlist_t *nv, const char *name);
 extern boolean_t zvol_is_zvol(const char *);
 extern void zvol_create_cb(objset_t *os, void *arg, cred_t *cr, dmu_tx_t *tx);
 extern int zvol_set_volsize(const char *, uint64_t);

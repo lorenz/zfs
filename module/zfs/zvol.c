@@ -318,11 +318,12 @@ zvol_create_cb(objset_t *os, void *arg, cred_t *cr, dmu_tx_t *tx)
  * ZFS_IOC_OBJSET_STATS entry point.
  */
 int
-zvol_get_stats(objset_t *os, nvlist_t *nv)
+zvol_get_stats(objset_t *os, nvlist_t *nv, const char *name)
 {
 	int error;
 	dmu_object_info_t *doi;
 	uint64_t val;
+	zvol_state_t *zv;
 
 	error = zap_lookup(os, ZVOL_ZAP_OBJ, "size", 8, 1, &val);
 	if (error)
@@ -338,6 +339,16 @@ zvol_get_stats(objset_t *os, nvlist_t *nv)
 	}
 
 	kmem_free(doi, sizeof (dmu_object_info_t));
+
+	zv = zvol_find_by_name(name, RW_NONE);
+	if (zv) {
+		dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MINOR, MINOR(zv->zv_dev));
+		dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MAJOR, MAJOR(zv->zfs_dev));
+		dsl_prop_nvlist_add_string(nv, ZFS_PROP_DEVICE_NAME, zv->zv_disk->disk_name);
+		mutex_exit(&zv->zv_state_lock);
+	} else {
+		return EIO;
+	}
 
 	return (SET_ERROR(error));
 }

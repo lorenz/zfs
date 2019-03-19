@@ -2102,7 +2102,6 @@ zfs_ioc_objset_stats_impl(zfs_cmd_t *zc, objset_t *os)
 {
 	int error = 0;
 	nvlist_t *nv;
-	zvol_state_t *zv;
 
 	dmu_objset_fast_stat(os, &zc->zc_objset_stats);
 
@@ -2118,16 +2117,7 @@ zfs_ioc_objset_stats_impl(zfs_cmd_t *zc, objset_t *os)
 		 */
 		if (!zc->zc_objset_stats.dds_inconsistent &&
 		    dmu_objset_type(os) == DMU_OST_ZVOL) {
-			zv = zvol_find_by_name(zc->name, RW_NONE);
-			if (zv) {
-				dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MINOR, MINOR(zv->zv_dev));
-				dsl_prop_nvlist_add_uint64(nv, ZFS_PROP_DEVICE_MAJOR, MAJOR(zv->zfs_dev));
-				dsl_prop_nvlist_add_string(nv, ZFS_PROP_DEVICE_NAME, zv->zv_disk->disk_name);
-				mutex_exit(&zv->zv_state_lock);
-			} else {
-				return EIO;
-			}
-			error = zvol_get_stats(os, nv);
+			error = zvol_get_stats(os, nv, zc->name);
 			if (error == EIO) {
 				nvlist_free(nv);
 				return (error);
